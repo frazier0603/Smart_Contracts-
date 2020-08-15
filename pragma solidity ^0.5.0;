@@ -1,0 +1,44 @@
+pragma solidity ^0.5.0;
+// lvl 1: equal split
+contract AssociateProfitSplitter {
+    // @TODO: Create three payable addresses representing `employee_one`, `employee_two` and `employee_three`.
+    address payable employee_one;
+    address payable employee_two;
+    address payable employee_three;
+    address public last_to_withdraw;
+    uint public last_withdraw_block;
+    uint public last_withdraw_amount;
+    address public last_to_deposit;
+    uint public last_deposit_block;
+    uint public last_deposit_amount;
+    uint unlock_time;
+    uint fakenow = now;
+      // Constructor for setting the owner of the contract as the one who deploys the contract
+    constructor(address payable _one, address payable _two, address payable _three) public {
+        employee_one = _one;
+        employee_two = _two;
+        employee_three = _three;
+    }
+  // Obtains the balance residing within the contract
+    function getBalance() public view returns(uint) {
+      return address(this).balance;
+    }
+    function deposit() public payable {
+        // @TODO: Split `msg.value` into three
+        // Your code here!
+        uint amount = msg.value / 3;
+        // @TODO: Transfer the amount to each employee
+        // Your code here!
+        msg.sender.transfer(amount);
+        // @TODO: take care of a potential remainder by sending back to HR (`msg.sender`)
+        // Your code here!
+        if (last_to_deposit != msg.sender) {
+      last_to_deposit = msg.sender;
+    }
+    last_deposit_block = block.number;
+    last_deposit_amount = (msg.value - amount * 3);
+    }    
+    function() external payable {deposit();}
+        // @TODO: Enforce that the `deposit` function is called in the fallback function!
+        // Your code here!
+}
